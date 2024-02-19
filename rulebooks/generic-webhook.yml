@@ -8,6 +8,19 @@
   rules:
 
   #
+  # Process the splunk webhooks
+  #
+  - name: Rules to process the splunk
+    condition: event.payload is defined and event.meta.endpoint == "{{ endpoint.splunk }}"
+    action:
+      run_job_template:
+        name: eda-template-splunk
+        organization: Default
+        job_args:
+          extra_vars:
+            event: "{{ event }}"
+
+  #
   # Process web rules
   #
   - name: Rules to process the web
