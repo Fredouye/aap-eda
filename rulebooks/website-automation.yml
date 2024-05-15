@@ -1,0 +1,23 @@
+---
+- name: Listen for events on a webhook
+  hosts: web
+  ## Define our source for events
+  sources:
+     - ansible.eda.url_check:
+        urls:
+          - "{{ url }}"
+        delay: 10
+
+  rules:
+    ## Define the conditions we are looking for
+    - name: Web site is down
+      condition: event.url_check.status == "down"
+    ## Define the action we should take should the condition be met
+      action:
+        run_job_template:
+          name: 'HTTP site down'
+          organization: 'Demo'
+          job_args:
+            extra_vars:
+               message: "HTTP down"
+          filter: '*'
